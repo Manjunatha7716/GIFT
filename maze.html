@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Maze for Shaffa 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fce4ec, #f8bbd9, #f48fb1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #e91e63, #f48fb1, #f8bbd9);
+        }
+
+        .header {
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h1 {
+            color: #e91e63;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: pulse 2s infinite;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .maze-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .maze {
+            display: grid;
+            gap: 2px;
+            margin: 20px auto;
+            background: #333;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: fit-content;
+        }
+
+        .maze.easy {
+            grid-template-columns: repeat(15, 30px);
+            grid-template-rows: repeat(15, 30px);
+        }
+
+        .maze.medium {
+            grid-template-columns: repeat(20, 25px);
+            grid-template-rows: repeat(20, 25px);
+        }
+
+        .maze.hard {
+            grid-template-columns: repeat(25, 20px);
+            grid-template-rows: repeat(25, 20px);
+        }
+
+        .cell {
+            background: #fce4ec;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .maze.easy .cell {
+            width: 30px;
+            height: 30px;
+            font-size: 20px;
+        }
+
+        .maze.medium .cell {
+            width: 25px;
+            height: 25px;
+            font-size: 16px;
+        }
+
+        .maze.hard .cell {
+            width: 20px;
+            height: 20px;
+            font-size: 14px;
+        }
+
+        .wall {
+            background: #e91e63;
+        }
+
+        .player {
+            background: linear-gradient(135deg, #f48fb1, #e91e63);
+            color: white;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+
+        .goal {
+            background: linear-gradient(135deg, #4caf50, #8bc34a);
+            color: white;
+            font-weight: bold;
+            animation: bounce 2s infinite;
+        }
+
+        .visited {
+            background: #f8bbd9;
+        }
+
+        .controls {
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+            border-radius: 15px;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #e91e63, #f48fb1);
+            color: white;
+            border: none;
+            margin: 5px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(233, 30, 99, 0.3);
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(233, 30, 99, 0.4);
+        }
+
+        .control-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat h3 {
+            color: #e91e63;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .stat p {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .difficulty-selector {
+            margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .difficulty-btn {
+            background: linear-gradient(135deg, #e91e63, #f48fb1);
+            color: white;
+            border: none;
+            margin: 5px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .difficulty-btn.active {
+            background: linear-gradient(135deg, #4caf50, #8bc34a);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .power-ups {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .power-up {
+            background: linear-gradient(135deg, #ff9800, #ffc107);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(255, 152, 0, 0.3);
+        }
+
+        .power-up:hover {
+            transform: translateY(-2px);
+        }
+
+        .power-up:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .victory-message {
+            display: none;
+            background: linear-gradient(135deg, #e91e63, #f48fb1);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .victory-message h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .victory-message p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            color: #e91e63;
+            font-size: 20px;
+            animation: float 6s infinite linear;
+            opacity: 0.7;
+        }
+
+        .navigation {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fce4ec;
+            border-radius: 15px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #e91e63, #f48fb1);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(233, 30, 99, 0.3);
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .maze.easy {
+                grid-template-columns: repeat(15, 20px);
+                grid-template-rows: repeat(15, 20px);
+            }
+            
+            .maze.medium {
+                grid-template-columns: repeat(20, 18px);
+                grid-template-rows: repeat(20, 18px);
+            }
+            
+            .maze.hard {
+                grid-template-columns: repeat(25, 15px);
+                grid-template-rows: repeat(25, 15px);
+            }
+            
+            .maze.easy .cell {
+                width: 20px;
+                height: 20px;
+                font-size: 14px;
+            }
+            
+            .maze.medium .cell {
+                width: 18px;
+                height: 18px;
+                font-size: 12px;
+            }
+            
+            .maze.hard .cell {
+                width: 15px;
+                height: 15px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts" id="hearts"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🧩 Love Maze for Shaffa 💕</h1>
+            <p>Help the heart find its way to love! Use the arrow keys or buttons to navigate. 💖</p>
+        </div>
+
+        <div class="maze-container">
+            <div class="difficulty-selector">
+                <h3 style="color: #e91e63; margin-bottom: 10px;">Choose Difficulty Level:</h3>
+                <button class="difficulty-btn active" onclick="setDifficulty('easy')">Easy 🟢</button>
+                <button class="difficulty-btn" onclick="setDifficulty('medium')">Medium 🟡</button>
+                <button class="difficulty-btn" onclick="setDifficulty('hard')">Hard 🔴</button>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <h3>Moves</h3>
+                    <p id="moves">0</p>
+                </div>
+                <div class="stat">
+                    <h3>Time</h3>
+                    <p id="time">0s</p>
+                </div>
+                <div class="stat">
+                    <h3>Best</h3>
+                    <p id="best">--</p>
+                </div>
+                <div class="stat">
+                    <h3>Score</h3>
+                    <p id="mazeScore">0</p>
+                </div>
+            </div>
+
+            <div class="power-ups">
+                <button class="power-up" onclick="usePowerUp('hint')" id="hintBtn">💡 Hint (3)</button>
+                <button class="power-up" onclick="usePowerUp('teleport')" id="teleportBtn">⚡ Teleport (2)</button>
+                <button class="power-up" onclick="usePowerUp('slow')" id="slowBtn">🐌 Slow Time (1)</button>
+            </div>
+
+            <div class="maze" id="maze"></div>
+
+            <div class="controls">
+                <button class="control-btn" onclick="movePlayer('up')">↑</button>
+                <button class="control-btn" onclick="movePlayer('left')">←</button>
+                <button class="control-btn" onclick="movePlayer('down')">↓</button>
+                <button class="control-btn" onclick="movePlayer('right')">→</button>
+                <button class="control-btn" onclick="resetGame()">🔄 Reset</button>
+            </div>
+            
+            <div style="margin: 15px 0; padding: 10px; background: rgba(233, 30, 99, 0.1); border-radius: 10px; font-size: 0.9em; color: #666;">
+                <strong>💡 Controls:</strong> Use Arrow Keys or WASD to move | R to Reset | 1/2/3 to change difficulty
+            </div>
+        </div>
+
+        <div class="victory-message" id="victory">
+            <h2>🎉 Congratulations Shaffa! 🎉</h2>
+            <p>You found your way to love! 💕</p>
+            <p>You completed the maze in <span id="finalTime">0</span> seconds with <span id="finalMoves">0</span> moves!</p>
+            <p>Your love journey is complete! 🌟</p>
+            
+            <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin: 15px 0;">
+                <p style="font-size: 1.1em; margin-bottom: 10px;">🎂 Ready to see your beautiful birthday page?</p>
+                <p style="font-size: 0.9em; color: rgba(255,255,255,0.8);">
+                    Taking you to your special birthday page with all our memories in 8 seconds...
+                </p>
+            </div>
+            
+            <button class="control-btn" onclick="resetGame()">Play Again! 🎮</button>
+        </div>
+
+        <div class="navigation">
+            <a href="birthday.html" class="nav-link">🎂 Back to Birthday Page</a>
+            <a href="game.html" class="nav-link">💕 Take Love Quiz</a>
+            <a href="maze.html" class="nav-link">🧩 Restart Maze</a>
+        </div>
+    </div>
+
+    <script>
+        // Maze configuration
+        let mazeSize = 15;
+        let playerPos = { x: 1, y: 1 };
+        let goalPos = { x: 13, y: 13 };
+        let moves = 0;
+        let startTime = Date.now();
+        let gameRunning = true;
+        let difficulty = 'easy';
+        let score = 0;
+        let hints = 3;
+        let teleports = 2;
+        let slowTime = 1;
+
+        // Predefined maze layouts for different difficulties (1 = wall, 0 = path)
+        const mazeLayouts = {
+            easy: [
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                [1,0,1,0,0,0,1,0,0,0,0,0,1,0,1],
+                [1,0,1,0,1,0,1,0,1,1,1,0,1,0,1],
+                [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
+                [1,1,1,1,1,1,1,0,1,0,1,1,1,0,1],
+                [1,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
+                [1,0,1,1,1,1,1,1,1,0,1,1,1,0,1],
+                [1,0,0,0,0,0,0,0,0,0,0,0,1,0,1],
+                [1,1,1,0,1,1,1,1,1,1,1,0,1,0,1],
+                [1,0,0,0,1,0,0,0,0,0,0,0,1,0,1],
+                [1,0,1,1,1,0,1,1,1,0,1,1,1,0,1],
+                [1,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
+                [1,1,1,1,1,0,1,0,1,1,1,1,1,0,1],
+                [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+            ],
+            medium: [
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                [1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,1],
+                [1,0,1,0,1,0,1,0,1,1,1,0,1,0,1,0,1,0,1,1],
+                [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
+                [1,1,1,1,1,1,1,0,1,0,1,1,1,0,1,1,1,1,0,1],
+                [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,1],
+                [1,0,1,1,1,1,1,1,1,0,1,1,1,0,1,1,0,1,0,1],
+                [1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,1],
+                [1,1,1,0,1,1,1,1,1,1,1,0,1,0,1,1,1,1,0,1],
+                [1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+                [1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1],
+                [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1],
+                [1,1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1],
+                [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1],
+                [1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1],
+                [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                [1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1],
+                [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+            ],
+            hard: [
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                [1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,1],
+                [1,0,1,0,1,0,1,0,1,1,1,0,1,0,1,0,1,0,1,1,1,0,1,0,1],
+                [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
+                [1,1,1,1,1,1,1,0,1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1],
+                [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
+                [1,0,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1],
+                [1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,1],
+                [1,1,1,0,1,1,1,1,1,1,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1],
+                [1,0,0,0,1,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,1],
+                [1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1],
+                [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
+                [1,1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,0,1,1,1],
+                [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,1],
+                [1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1],
+                [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                [1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1],
+                [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
+                [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                [1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1],
+                [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
+                [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+            ]
+        };
+
+        // Current maze layout
+        let currentMazeLayout = mazeLayouts.easy;
+
+        // Initialize game
+        function initGame() {
+            renderMaze();
+            updateStats();
+            startTimer();
+            setupKeyboardControls();
+            updatePowerUpButtons();
+        }
+
+        // Set difficulty level
+        function setDifficulty(level) {
+            difficulty = level;
+            
+            // Update button states
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Adjust maze based on difficulty
+            switch(level) {
+                case 'easy':
+                    mazeSize = 15;
+                    goalPos = { x: 13, y: 13 };
+                    currentMazeLayout = mazeLayouts.easy;
+                    break;
+                case 'medium':
+                    mazeSize = 20;
+                    goalPos = { x: 18, y: 18 };
+                    currentMazeLayout = mazeLayouts.medium;
+                    break;
+                case 'hard':
+                    mazeSize = 25;
+                    goalPos = { x: 23, y: 23 };
+                    currentMazeLayout = mazeLayouts.hard;
+                    break;
+            }
+            
+            resetGame();
+        }
+
+        // Power-up functions
+        function usePowerUp(type) {
+            if (!gameRunning) return;
+            
+            switch(type) {
+                case 'hint':
+                    if (hints > 0) {
+                        showHint();
+                        hints--;
+                        updatePowerUpButtons();
+                    }
+                    break;
+                case 'teleport':
+                    if (teleports > 0) {
+                        teleportToGoal();
+                        teleports--;
+                        updatePowerUpButtons();
+                    }
+                    break;
+                case 'slow':
+                    if (slowTime > 0) {
+                        slowDownTime();
+                        slowTime--;
+                        updatePowerUpButtons();
+                    }
+                    break;
+            }
+        }
+
+        function showHint() {
+            // Show path to goal
+            const path = findPathToGoal();
+            if (path.length > 0) {
+                alert(`💡 Hint: Move ${path[0]} to get closer to the goal!`);
+            }
+        }
+
+        function teleportToGoal() {
+            // Teleport to a random position near the goal
+            const nearGoal = [
+                { x: goalPos.x - 1, y: goalPos.y },
+                { x: goalPos.x + 1, y: goalPos.y },
+                { x: goalPos.x, y: goalPos.y - 1 },
+                { x: goalPos.x, y: goalPos.y + 1 }
+            ];
+            
+            const validPositions = nearGoal.filter(pos => 
+                pos.x >= 0 && pos.x < mazeSize && 
+                pos.y >= 0 && pos.y < mazeSize && 
+                currentMazeLayout[pos.y] && currentMazeLayout[pos.y][pos.x] === 0
+            );
+            
+            if (validPositions.length > 0) {
+                const randomPos = validPositions[Math.floor(Math.random() * validPositions.length)];
+                playerPos = randomPos;
+                renderMaze();
+                score += 50; // Bonus points for using power-up
+                updateStats();
+            }
+        }
+
+        function slowDownTime() {
+            // Add extra time
+            startTime += 30000; // Add 30 seconds
+            updateStats();
+            alert('🐌 Time slowed down! You have 30 extra seconds!');
+        }
+
+        function updatePowerUpButtons() {
+            document.getElementById('hintBtn').textContent = `💡 Hint (${hints})`;
+            document.getElementById('teleportBtn').textContent = `⚡ Teleport (${teleports})`;
+            document.getElementById('slowBtn').textContent = `🐌 Slow Time (${slowTime})`;
+            
+            document.getElementById('hintBtn').disabled = hints === 0;
+            document.getElementById('teleportBtn').disabled = teleports === 0;
+            document.getElementById('slowBtn').disabled = slowTime === 0;
+        }
+
+        function findPathToGoal() {
+            // Simple pathfinding hint
+            const dx = goalPos.x - playerPos.x;
+            const dy = goalPos.y - playerPos.y;
+            
+            if (Math.abs(dx) > Math.abs(dy)) {
+                return dx > 0 ? ['right'] : ['left'];
+            } else {
+                return dy > 0 ? ['down'] : ['up'];
+            }
+        }
+
+        // Render the maze
+        function renderMaze() {
+            const mazeElement = document.getElementById('maze');
+            mazeElement.innerHTML = '';
+            
+            // Update maze CSS class based on difficulty
+            mazeElement.className = `maze ${difficulty}`;
+
+            for (let y = 0; y < mazeSize; y++) {
+                for (let x = 0; x < mazeSize; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.id = `cell-${x}-${y}`;
+
+                    if (currentMazeLayout[y][x] === 1) {
+                        cell.classList.add('wall');
+                        cell.textContent = '🧱';
+                    } else if (x === playerPos.x && y === playerPos.y) {
+                        cell.classList.add('player');
+                        cell.textContent = '💕';
+                    } else if (x === goalPos.x && y === goalPos.y) {
+                        cell.classList.add('goal');
+                        cell.textContent = '🎯';
+                    }
+
+                    mazeElement.appendChild(cell);
+                }
+            }
+        }
+
+        // Move player
+        function movePlayer(direction) {
+            if (!gameRunning) return;
+
+            let newX = playerPos.x;
+            let newY = playerPos.y;
+
+            switch (direction) {
+                case 'up': newY--; break;
+                case 'down': newY++; break;
+                case 'left': newX--; break;
+                case 'right': newX++; break;
+            }
+
+            // Check if move is valid
+            if (newX >= 0 && newX < mazeSize && newY >= 0 && newY < mazeSize && currentMazeLayout[newY][newX] === 0) {
+                playerPos.x = newX;
+                playerPos.y = newY;
+                moves++;
+                
+                // Calculate score based on efficiency
+                const timeBonus = Math.max(0, 100 - Math.floor((Date.now() - startTime) / 1000));
+                const moveBonus = Math.max(0, 50 - moves);
+                score += 10 + timeBonus + moveBonus;
+                
+                updateStats();
+                renderMaze();
+
+                // Check for victory
+                if (playerPos.x === goalPos.x && playerPos.y === goalPos.y) {
+                    gameRunning = false;
+                    showVictory();
+                }
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('moves').textContent = moves;
+            document.getElementById('mazeScore').textContent = score;
+            
+            if (gameRunning) {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById('time').textContent = elapsed + 's';
+            }
+        }
+
+        // Start timer
+        function startTimer() {
+            setInterval(() => {
+                if (gameRunning) {
+                    updateStats();
+                }
+            }, 1000);
+        }
+
+        // Show victory message
+        function showVictory() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('finalTime').textContent = elapsed;
+            document.getElementById('finalMoves').textContent = moves;
+            document.getElementById('victory').style.display = 'block';
+            
+            // Launch confetti
+            launchConfetti();
+            
+            // Auto-redirect to birthday page after 8 seconds
+            setTimeout(() => {
+                window.location.href = 'birthday.html';
+            }, 8000);
+        }
+
+        // Reset game
+        function resetGame() {
+            playerPos = { x: 1, y: 1 };
+            moves = 0;
+            score = 0;
+            startTime = Date.now();
+            gameRunning = true;
+            hints = 3;
+            teleports = 2;
+            slowTime = 1;
+            document.getElementById('victory').style.display = 'none';
+            renderMaze();
+            updateStats();
+            updatePowerUpButtons();
+        }
+
+        // Keyboard controls
+        function setupKeyboardControls() {
+            let keyPressed = {};
+            
+            document.addEventListener('keydown', (e) => {
+                // Prevent default for all movement keys to avoid scrolling
+                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 's', 'S', 'a', 'A', 'd', 'D'].includes(e.key)) {
+                    e.preventDefault();
+                }
+                
+                // Prevent repeated keydown events when key is held
+                if (keyPressed[e.key]) return;
+                keyPressed[e.key] = true;
+                
+                switch (e.key) {
+                    case 'ArrowUp':
+                    case 'w':
+                    case 'W':
+                        movePlayer('up');
+                        break;
+                    case 'ArrowDown':
+                    case 's':
+                    case 'S':
+                        movePlayer('down');
+                        break;
+                    case 'ArrowLeft':
+                    case 'a':
+                    case 'A':
+                        movePlayer('left');
+                        break;
+                    case 'ArrowRight':
+                    case 'd':
+                    case 'D':
+                        movePlayer('right');
+                        break;
+                    case 'r':
+                    case 'R':
+                        resetGame();
+                        break;
+                    case '1':
+                        setDifficulty('easy');
+                        break;
+                    case '2':
+                        setDifficulty('medium');
+                        break;
+                    case '3':
+                        setDifficulty('hard');
+                        break;
+                }
+            });
+            
+            document.addEventListener('keyup', (e) => {
+                keyPressed[e.key] = false;
+            });
+        }
+
+        // Create floating hearts animation
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '💕';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            document.getElementById('hearts').appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
+        }
+
+        // Launch confetti
+        function launchConfetti() {
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        // Create hearts periodically
+        setInterval(createHeart, 2000);
+
+        // Add some initial hearts
+        for (let i = 0; i < 3; i++) {
+            setTimeout(createHeart, i * 400);
+        }
+
+        // Check for challenge parameter
+        function checkChallenge() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const challenge = urlParams.get('challenge');
+            
+            if (challenge === 'hard') {
+                // Auto-set to hard mode
+                difficulty = 'hard';
+                mazeSize = 25;
+                goalPos = { x: 23, y: 23 };
+                currentMazeLayout = mazeLayouts.hard;
+                
+                // Update UI to show hard mode is selected
+                document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector('.difficulty-btn:nth-child(3)').classList.add('active');
+                
+                // Show challenge message
+                setTimeout(() => {
+                    alert('🔥 CHALLENGE ACCEPTED! 🔥\n\nYou\'re now playing on HARD mode!\nShow me what you\'ve got, Shaffa! 💪');
+                }, 1000);
+            }
+        }
+
+        // Initialize game when page loads
+        checkChallenge();
+        initGame();
+    </script>
+    <!-- 🎉 Confetti library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</body>
+</html>

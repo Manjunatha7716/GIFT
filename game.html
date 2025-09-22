@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Quiz for Shaffa Baby ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fce4ec, #f8bbd9, #f48fb1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #e91e63, #f48fb1, #f8bbd9);
+        }
+
+        .header {
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease-out;
+            text-align: center;
+        }
+
+        h1 {
+            color: #e91e63;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: pulse 2s infinite;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .question {
+            color: #e91e63;
+            font-size: 1.4em;
+            margin-bottom: 25px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(233, 30, 99, 0.2);
+            line-height: 1.5;
+        }
+
+        .options {
+            text-align: left;
+            margin: 25px 0;
+        }
+
+        label {
+            display: block;
+            margin: 12px 0;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-size: 1.05em;
+            box-shadow: 0 3px 10px rgba(233, 30, 99, 0.1);
+        }
+
+        label:hover {
+            background: linear-gradient(135deg, #f8bbd9, #f48fb1);
+            transform: translateX(8px) scale(1.02);
+            box-shadow: 0 5px 20px rgba(233, 30, 99, 0.2);
+            border-color: #e91e63;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #fce4ec;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #e91e63, #f48fb1);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);
+        }
+
+        .question-counter {
+            text-align: center;
+            color: #e91e63;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        label input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        button {
+            background: linear-gradient(135deg, #e91e63, #f48fb1);
+            color: white;
+            border: none;
+            margin: 15px 5px;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(233, 30, 99, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(233, 30, 99, 0.4);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #surprise {
+            font-size: 1.2em;
+            color: #e91e63;
+            font-weight: bold;
+            background: linear-gradient(135deg, #e91e63, #f48fb1);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            color: #e91e63;
+            font-size: 20px;
+            animation: float 6s infinite linear;
+            opacity: 0.7;
+        }
+
+        .navigation {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fce4ec;
+            border-radius: 15px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #e91e63, #f48fb1);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(233, 30, 99, 0.3);
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .quiz-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat h3 {
+            color: #e91e63;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .stat p {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #e91e63, #f48fb1);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin: 15px 0;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(233, 30, 99, 0.3);
+        }
+
+        .score-display h3 {
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .score-display p {
+            font-size: 1.1em;
+            margin: 5px 0;
+        }
+
+        .celebration-animation {
+            animation: bounce 0.8s ease-in-out;
+        }
+
+        .wrong-answer {
+            animation: shake 0.6s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .correct-answer {
+            animation: correctPulse 1s ease-in-out;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); background: #4caf50; }
+            100% { transform: scale(1); }
+        }
+
+        .smooth-transition {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        .button-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .button-hover:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(233, 30, 99, 0.4);
+        }
+
+        .fun-bounce {
+            animation: funBounce 0.6s ease-in-out;
+        }
+
+        @keyframes funBounce {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1) rotate(2deg); }
+            50% { transform: scale(1.05) rotate(-1deg); }
+            75% { transform: scale(1.08) rotate(1deg); }
+        }
+
+        .sparkle {
+            animation: sparkle 1s ease-in-out;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        .achievement {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            animation: achievementPop 0.8s ease-out;
+        }
+
+        @keyframes achievementPop {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .quiz-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts" id="hearts"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🎉 Birthday Quiz for Boo Boo Panda 🎂</h1>
+            <p>Test your knowledge about our beautiful relationship, Shaffa Baby! 💕</p>
+        </div>
+
+        <div class="quiz-container">
+            <div class="quiz-stats" id="quizStats">
+                <div class="stat">
+                    <h3>💕 Love Score</h3>
+                    <p id="score">0</p>
+                </div>
+                <div class="stat">
+                    <h3>🔥 Streak</h3>
+                    <p id="streak">0</p>
+                </div>
+                <div class="stat">
+                    <h3>✨ Perfect</h3>
+                    <p id="perfect">0</p>
+                </div>
+            </div>
+            <div id="quiz"></div>
+            <div id="surprise" class="hidden"></div>
+        </div>
+
+        <div class="navigation">
+            <a href="birthday.html" class="nav-link">🎂 Back to Birthday Page</a>
+            <a href="maze.html" class="nav-link">🧩 Play Love Maze</a>
+            <a href="game.html" class="nav-link">🎮 Restart Quiz</a>
+        </div>
+    </div>
+
+  <script>
+    const questions = [
+      {
+        q: "💕 What silly nicknames do I keep calling my baby girl?",
+        options: ["Boo Boo 🐼", "Doo Doo 😘", "Motkii 💕", "Panda 🐾"],
+        answers: ["Boo Boo 🐼", "Doo Doo 😘", "Motkii 💕", "Panda 🐾"]
+      },
+      {
+        q: "🍽️ If I steal food from boo boo's plate, what will she protect first?",
+        options: ["Coffee ☕", "Dal Chaval 🍛", "Momos 🥟", "Tu mera khana chhune ki himmat hai 😡"],
+        answers: ["Coffee ☕", "Dal Chaval 🍛"]
+      },
+      {
+        q: "😂 What makes Doo Doo extra cute (and a little dangerous)?",
+        options: ["Her Face (especially cheeks) 😊", "Her panda walk 🚶‍♀️🐼", "Her cute fights (panda hands)👊", "Her 'I'll kill you' stare 👀"],
+        answers: ["Her Face (especially cheeks) 😊", "Her panda walk 🚶‍♀️🐼", "Her cute fights (panda hands)👊", "Her 'I'll kill you' stare 👀"]
+      },
+      {
+        q: "🎵 If Motkii was a song stuck in my head all day, what would it be?",
+        options: ["Tum Hi Ho 🎶", "All punjabi songs (just drugs, car and girl)", "old songs 💕(kishore kumar, , mohammad rafi)", "All Songs Combined in the world😍"],
+        answers: ["All Songs Combined in the world😍"]
+      },
+      {
+        q: "😜 What is Boo Boo's hidden superpower?",
+        options: ["Giving me the most cutest smile (her cheeks) 😊", "Fighting with me & then stealing hugs 💕", "Looking cute even when angry 😡➡️😍", "All of the above ✨"],
+        answers: ["All of the above ✨"]
+      },
+      {
+        q: "💌 Last one: What's the only gift Boo Boo truly wants to have?",
+        options: ["A Teddy 🧸", "Endless Food Dates 🍲", "World Tour 🌍", "My Love, Always ❤️(everything above included)"],
+        answers: ["My Love, Always ❤️(everything above included)"]
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+    let streak = 0;
+    let perfectAnswers = 0;
+    let startTime = Date.now();
+    const quizEl = document.getElementById("quiz");
+    const surpriseEl = document.getElementById("surprise");
+
+    function loadQuestion() {
+      const progress = ((current + 1) / questions.length) * 100;
+      
+      // Add fade out effect
+      quizEl.style.opacity = '0.7';
+      quizEl.style.transform = 'translateY(10px)';
+      
+      setTimeout(() => {
+        quizEl.innerHTML = `
+          <div class="question-counter fade-in">Question ${current + 1} of ${questions.length} 💕</div>
+          <div class="progress-bar fade-in">
+            <div class="progress-fill smooth-transition" style="width: ${progress}%"></div>
+          </div>
+          <div class="question fade-in">${questions[current].q}</div>
+          <div class="options fade-in">
+            ${questions[current].options.map(opt =>
+              `<label class="smooth-transition"><input type="checkbox" value="${opt}"> ${opt}</label>`
+            ).join('')}
+          </div>
+          <button onclick="checkAnswer()" class="button-hover">Submit Answer 💕</button>
+        `;
+        
+        // Add fade in effect
+        quizEl.style.opacity = '1';
+        quizEl.style.transform = 'translateY(0)';
+      }, 300);
+    }
+
+    function checkAnswer() {
+      const selected = Array.from(document.querySelectorAll("input[type=checkbox]:checked")).map(cb => cb.value);
+      const correct = questions[current].answers;
+
+      // Disable submit button to prevent double submission
+      const submitBtn = document.querySelector('button[onclick="checkAnswer()"]');
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.6';
+
+      if (arraysEqual(selected.sort(), correct.sort())) {
+        // Correct answer
+        score += 100;
+        streak++;
+        perfectAnswers++;
+        
+        // Add celebration animation with smooth feedback
+        document.querySelector('.quiz-container').classList.add('celebration-animation');
+        
+        // Add fun bounce to stats
+        document.getElementById('score').classList.add('fun-bounce');
+        document.getElementById('streak').classList.add('fun-bounce');
+        document.getElementById('perfect').classList.add('fun-bounce');
+        
+        // Show success feedback
+        showFeedback('✅ Correct! Well done! 💕', 'success');
+        
+        setTimeout(() => {
+          document.querySelector('.quiz-container').classList.remove('celebration-animation');
+          
+          // Remove bounce animations
+          document.getElementById('score').classList.remove('fun-bounce');
+          document.getElementById('streak').classList.remove('fun-bounce');
+          document.getElementById('perfect').classList.remove('fun-bounce');
+        }, 800);
+
+        // Update stats with smooth animation
+        updateStats();
+        
+        current++;
+        if (current < questions.length) {
+          setTimeout(() => {
+            loadQuestion();
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+          }, 1200);
+        } else {
+          setTimeout(() => {
+            showSurprise();
+          }, 1200);
+        }
+      } else {
+        // Wrong answer
+        streak = 0;
+        
+        // Add shake animation
+        document.querySelector('.quiz-container').classList.add('wrong-answer');
+        
+        // Show fun feedback
+        showFunFeedback();
+        
+        setTimeout(() => {
+          document.querySelector('.quiz-container').classList.remove('wrong-answer');
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '1';
+        }, 800);
+      }
+    }
+
+    function showFeedback(message, type) {
+      const feedback = document.createElement('div');
+      feedback.className = `feedback ${type} fade-in`;
+      feedback.textContent = message;
+      
+      let background, textColor;
+      switch(type) {
+        case 'success':
+          background = 'linear-gradient(135deg, #4caf50, #8bc34a)';
+          textColor = 'white';
+          break;
+        case 'fun':
+          background = 'linear-gradient(135deg, #ff9800, #ffc107)';
+          textColor = 'white';
+          break;
+        default:
+          background = 'linear-gradient(135deg, #f44336, #e57373)';
+          textColor = 'white';
+      }
+      
+      feedback.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: ${background};
+        color: ${textColor};
+        padding: 15px 25px;
+        border-radius: 25px;
+        font-size: 1.1em;
+        font-weight: bold;
+        z-index: 1000;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        animation: fadeIn 0.5s ease-out;
+      `;
+      
+      document.body.appendChild(feedback);
+      
+      setTimeout(() => {
+        feedback.style.opacity = '0';
+        feedback.style.transform = 'translate(-50%, -50%) scale(0.8)';
+        setTimeout(() => feedback.remove(), 300);
+      }, 1500);
+    }
+
+    function showFunFeedback() {
+      const funMessages = [
+        "😜 Boo Boo, think again! 💕",
+        "🤔 Almost there, my love! 💕",
+        "😊 Try once more, sweetie! 💕",
+        "💕 You've got this, babe! 💕",
+        "🐼 Come on panda, you know this! 💕",
+        "😘 Think about us, my love! 💕"
+      ];
+      
+      const randomMessage = funMessages[Math.floor(Math.random() * funMessages.length)];
+      showFeedback(randomMessage, 'fun');
+    }
+
+    function updateStats() {
+      // Add smooth number animation
+      animateNumber('score', score);
+      animateNumber('streak', streak);
+      animateNumber('perfect', perfectAnswers);
+    }
+
+    function animateNumber(elementId, targetValue) {
+      const element = document.getElementById(elementId);
+      const currentValue = parseInt(element.textContent) || 0;
+      const increment = (targetValue - currentValue) / 10;
+      let current = currentValue;
+
+      const timer = setInterval(() => {
+        current += increment;
+        if ((increment > 0 && current >= targetValue) || (increment < 0 && current <= targetValue)) {
+          current = targetValue;
+          clearInterval(timer);
+        }
+        element.textContent = Math.round(current);
+      }, 50);
+    }
+
+    function arraysEqual(a, b) {
+      return a.length === b.length && a.every((val, index) => val === b[index]);
+    }
+
+    function showSurprise() {
+      quizEl.classList.add("hidden");
+      surpriseEl.classList.remove("hidden");
+      
+      function showResults() {
+        // Add smooth entrance animation
+        surpriseEl.style.opacity = '0';
+        surpriseEl.style.transform = 'translateY(30px)';
+        
+        surpriseEl.innerHTML = `
+          <h2 class="fade-in">🎉 Congratulations Shaffa Baby! 🎉</h2>
+          <div style="margin: 20px 0;">
+            <p class="fade-in" style="font-size: 1.2em; margin-bottom: 20px;">You know our love story perfectly! 💕</p>
+            
+            <div class="score-display slide-up">
+              <h3>🏆 Your Amazing Results! 🏆</h3>
+              <p>💕 Love Score: <strong>${score} points</strong> 🎯</p>
+              <p>✨ Perfect Answers: <strong>${perfectAnswers}/${questions.length}</strong> ✨</p>
+              <p>🔥 Longest Streak: <strong>${streak}</strong> 🔥</p>
+              <p>🎂 You're absolutely amazing! 💕</p>
+            </div>
+            
+            <div class="fade-in" style="background: rgba(255,255,255,0.25); padding: 25px; border-radius: 20px; margin: 25px 0; border: 2px solid rgba(255,255,255,0.3);">
+              <h3 style="font-size: 1.4em; margin-bottom: 20px;">💌 My Love Letter to You:</h3>
+              <p style="font-style: italic; line-height: 1.8; margin-top: 15px; font-size: 1.1em;">
+                My dearest Boo Boo Panda 🐼❤️<br><br>
+                Happy Birthday to the most beautiful soul I've ever known! 
+                You are my happiness, my strength, and my forever.  
+                From your mesmerizing eyes to your adorable panda hands, 
+                everything about you is pure magic ✨.<br><br>
+                
+                I promise to love you endlessly, fight with you cutely,  
+                and take care of you when you forget to take care of yourself. 
+                You are my world, my heart, and my everything. 💕<br><br>
+                
+                <strong style="font-size: 1.2em;">Always and forever yours,<br>
+                Your devoted Boo 💖</strong>
+              </p>
+            </div>
+            
+            <div class="slide-up" style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 15px; margin: 20px 0;">
+              <p style="font-size: 1.3em; margin-bottom: 15px;">I love you more than words can express! 🌟</p>
+              
+              <div style="background: rgba(255,215,0,0.3); padding: 15px; border-radius: 10px; margin: 15px 0; border: 2px solid #ffd700;">
+                <h4 style="color: #ffd700; margin-bottom: 10px;">🏆 READY FOR A CHALLENGE? 🏆</h4>
+                <p style="font-size: 1.1em; margin-bottom: 10px;">
+                  Since you know our love so well, I dare you to prove your skills in the Love Maze! 
+                  Can you beat it on HARD level? 🔥
+                </p>
+                <p style="font-size: 1em; color: rgba(255,255,255,0.9); margin-bottom: 15px;">
+                  I'll set it to hard mode for you - show me what you've got! Panda 💪
+                </p>
+                
+                <button onclick="acceptChallenge()" class="button-hover" style="background: linear-gradient(135deg, #ffd700, #ffed4e); color: #333; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; font-size: 1.1em; font-weight: bold; box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);">
+                  🎮 ACCEPT CHALLENGE! Kar ke deka Motkii 💪
+                </button>
+              </div>
+              
+              <div style="margin-top: 20px;">
+                <button onclick="goToPhotos()" class="button-hover" style="background: linear-gradient(135deg, #e91e63, #f48fb1); color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 1em; margin: 5px; box-shadow: 0 3px 10px rgba(233, 30, 99, 0.3);">
+                  📸 Skip to Photos 🎂
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        // Smooth entrance animation
+        setTimeout(() => {
+          surpriseEl.style.opacity = '1';
+          surpriseEl.style.transform = 'translateY(0)';
+        }, 100);
+      }
+      
+      showResults();
+      launchConfetti();
+      
+      // Add functions for button clicks
+      window.acceptChallenge = function() {
+        window.location.href = 'maze.html?challenge=hard';
+      };
+      
+      window.goToPhotos = function() {
+        window.location.href = 'birthday.html';
+      };
+    }
+
+    function launchConfetti() {
+      const duration = 3 * 1000;
+      const end = Date.now() + duration;
+
+      (function frame() {
+        confetti({
+          particleCount: 5,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 5,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 }
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      }());
+    }
+
+    // Create floating hearts animation
+    function createHeart() {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.innerHTML = '💕';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        document.getElementById('hearts').appendChild(heart);
+
+        setTimeout(() => {
+            heart.remove();
+        }, 6000);
+    }
+
+    // Create hearts periodically
+    setInterval(createHeart, 1500);
+
+    // Add some initial hearts
+    for (let i = 0; i < 3; i++) {
+        setTimeout(createHeart, i * 300);
+    }
+
+    loadQuestion();
+  </script>
+  <!-- 🎉 Confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</body>
+</html>
